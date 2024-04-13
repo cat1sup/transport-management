@@ -1,11 +1,18 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Welcome from './Components/Welcome';
+import Register from './Components/Register';
+import Login from './Components/Login';
+
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        
-          Learn React
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
 }
 
