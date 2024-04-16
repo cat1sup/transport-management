@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // Import Link
+import { useNavigate, Link } from 'react-router-dom';  // Import useNavigate for redirection
+import { useAuth } from '../AuthContext';  // Import useAuth from your context
 import './Login.css';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();  // For programmatic navigation
+    const { login } = useAuth();  // Access the login method from context
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -14,8 +17,8 @@ export default function Login() {
                 email, password
             });
             console.log("Login successful", data.token);
-            // Optional: Store the token in localStorage/sessionStorage
-            // redirect to another route/page
+            login();  // Update the global state to indicate the user is logged in
+            navigate('/dashboard');  // Redirect user to the dashboard after login
         } catch (error) {
             console.error("Login failed", error.response.data.message);
         }

@@ -1,0 +1,16 @@
+.custom-navbar {
+    padding: 10px 15px; /* Increase padding to make the navbar taller */
+    font-size: 16px; /* Optionally increase the font size for better visibility */
+}
+
+.nav-link, .navbar-brand {
+    padding: 8px 12px; /* Larger padding for clickable areas */
+}
+
+.navbar-toggle {
+    padding: 6px 10px; /* Adjust toggle size if needed */
+}
+
+.navbar-collapse {
+    justify-content: flex-end; /* Ensure nav items align to the right */
+}
