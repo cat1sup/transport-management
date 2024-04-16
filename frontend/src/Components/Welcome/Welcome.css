@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    outline: none; /* Removing any focus outlines that might be misinterpreted */
+    background: none; /* Reset any default backgrounds */
+    box-sizing: border-box; /* Ensures padding and border are included in the width & height */
+}
+
+/* Applying specific styles to the body and HTML to ensure full coverage */
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Prevents any scroll bars */
+    position: relative; /* Sets a stacking context */
+}
+
+.welcome-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none; /* No default background */
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+
+.welcome-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../../images/transport-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px);
+    z-index: 1;
+}
+
+.welcome-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 2;
+}
+
+.welcome-container {
+    position: relative;
+    text-align: center;
+    padding: 60px 0;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    width: 100%; /* Ensuring it stretches without padding/border causing width issues */
+}
+
+.welcome-container h1 {
+    font-size: 3.6rem; /* Slightly larger font size */
+    margin-bottom: 50px; /* Increased margin for more space between title and buttons */
+    font-weight: bold;
+    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-buttons {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    width: 30%; /* Adjusted width for optimal button spacing */
+}
+
+.welcome-button {
+    padding: 15px 30px; /* Increased padding for larger buttons */
+    font-size: 1.2rem; /* Larger font size */
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #fff;
+    color: #004494;
+    border: none;
+    border-radius: 8px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.welcome-button:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+}
+
+.welcome-button:active {
+    transform: translateY(1px);
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.welcome-buttons::after {
+    content: '';
+    position: absolute;
+    height: 60%; /* Increased height of the divider */
+    width: 3px; /* Increased width of the divider */
+    background-color: #fff; /* White divider */
+    left: 50%; /* Centered between buttons */
+    top: 20%; /* Adjusted vertical positioning */
+}
+

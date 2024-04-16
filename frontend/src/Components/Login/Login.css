@@ -1,0 +1,111 @@
+/* Universal reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    background: none;
+    box-sizing: border-box;
+}
+
+/* Full coverage styles for body and HTML */
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Styling for the login area */
+.login-body {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../../images/transport-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px);
+    z-index: 1;
+}
+
+.login-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 2;
+}
+
+/* Adjusted login form styling for larger appearance */
+.login-form {
+    padding: 25px 40px; /* Increased padding for larger feel */
+    border-radius: 10px; /* Slightly more rounded corners */
+    background-color: white;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); /* More pronounced shadow for depth */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* More space between form elements */
+    width: 350px; /* Increased width for a larger form */
+    z-index: 3;
+    position: relative;
+    font-family: 'Arial', sans-serif;
+}
+
+.login-title {
+    font-size: 26px; /* Slightly larger title size */
+    color: #333;
+}
+
+.login-label {
+    margin-bottom: 10px; /* More space under labels */
+    color: #666;
+    font-size: 18px; /* Larger label text for better readability */
+}
+
+.login-input {
+    width: 100%;
+    padding: 12px 15px; /* More padding for larger input fields */
+    margin: 5px 0;
+    border: 1px solid #333;
+    border-radius: 5px;
+    font-size: 16px; /* Larger font size for input text */
+}
+
+.login-button {
+    width: 100%; /* Match width to input fields */
+    padding: 12px 15px; /* Match padding to input fields for identical height */
+    background-color: #004494; /* Main button color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Slightly larger button text for better interaction */
+}
+
+.login-button:hover {
+    background-color: #001e40; /* Darker shade on hover */
+}
+
+.back-button {
+    margin-top: 10px;
+    display: block; 
+    width: 100%; 
+    text-align: center;
+    text-decoration: none; 
+}
+

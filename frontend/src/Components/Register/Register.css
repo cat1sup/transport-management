@@ -1,0 +1,103 @@
+/* Universal reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    background: none;
+    box-sizing: border-box;
+}
+
+/* Full coverage styles for body and HTML */
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Styling for the registration area */
+.register-body {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.register-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../../images/transport-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px);
+    z-index: 1;
+}
+
+.register-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 2;
+}
+
+/* Adjusted registration form styling for consistent appearance with the login form */
+.register-form {
+    padding: 25px 40px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 350px; /* Same as the login form for consistency */
+    z-index: 3;
+    position: relative;
+    font-family: 'Arial', sans-serif;
+}
+
+.register-title {
+    font-size: 26px;
+    text-align: center;
+    color: #333;
+}
+
+.register-label {
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 18px;
+}
+
+.register-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 5px 0;
+    border: 1px solid #333;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.register-button {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #004494;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.register-button:hover {
+    background-color: #001e40;
+}
