@@ -5,11 +5,7 @@ import { useAuth } from '../AuthContext';
 import './NavigationBar.css';  // Assuming you have a CSS file for custom styles
 
 function NavigationBar() {
-  const { isLoggedIn, logout } = useAuth();
-
-  if (!isLoggedIn) {
-    return null;  // Do not render the navbar if the user is not logged in
-  }
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     logout();

@@ -14,3 +14,14 @@
 .navbar-collapse {
     justify-content: flex-end; /* Ensure nav items align to the right */
 }
+
+/* Add padding to the last Nav item */
+.nav-item:last-child .nav-link {
+    margin-right: 70px; /* Increase right margin on the last nav item */
+}
+
+/* Handle padding for dropdowns if they are the last item */
+.nav-dropdown:last-child .dropdown-toggle {
+    margin-right: 20px; /* Consistent spacing for dropdown */
+}
+
