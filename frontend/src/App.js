@@ -7,6 +7,8 @@ import Welcome from './Components/Welcome/Welcome';
 import Register from './Components/Register/Register';
 import Login from './Components/Login/Login';
 import Dashboard from './Components/Dashboard/Dashboard';
+import RegistrationSuccess from './Components/Register/RegisterSuccess';
+import ProfileSettings from './Components/ProfileSettings/ProfileSettings'; 
 
 function App() {
   return (
@@ -16,9 +18,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/registration-success" element={<RegistrationSuccess />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          {/* More routes can be added here */}
+          <Route path="/profile-settings" element={<ProfileSettings />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -1,26 +1,33 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';  // Import useNavigate for redirection
-import { useAuth } from '../AuthContext';  // Import useAuth from your context
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../AuthContext'; // Import useAuth from your context
 import './Login.css';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();  // For programmatic navigation
-    const { login } = useAuth();  // Access the login method from context
+    const navigate = useNavigate(); // For programmatic navigation
+    const { login } = useAuth(); // Access the login method from context
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post('/api/users/login', {
-                email, password
-            });
-            console.log("Login successful", data.token);
-            login();  // Update the global state to indicate the user is logged in
-            navigate('/dashboard');  // Redirect user to the dashboard after login
+            const response = await axios.post('/api/users/login', { email, password });
+            const data = response.data;
+            console.log("Received data from login:", data);
+            if (data.token) {
+                console.log("Login successful", data.token);
+                localStorage.setItem('token', data.token); 
+                console.log('Token stored:', localStorage.getItem('token'));// Store the token in local storage
+                login(); // Update the global state to indicate the user is logged in
+                navigate('/dashboard'); // Navigate to the dashboard after successful login
+                console.log('Token:', data.token);
+            } else {
+                console.error("Token not received");
+            }
         } catch (error) {
-            console.error("Login failed", error.response.data.message);
+            console.error("Login failed", error.response ? error.response.data.message : "No response from server");
         }
     };
 

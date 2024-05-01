@@ -1,16 +1,23 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { useAuth } from '../AuthContext';
-import './NavigationBar.css';  // Assuming you have a CSS file for custom styles
+import './NavigationBar.css';
 
 function NavigationBar() {
-  const { logout } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     console.log('Logging out...');
+    navigate('/login');  // Redirect to login page after logout
   };
+  console.log('Is logged in:', isLoggedIn);
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect className="custom-navbar">

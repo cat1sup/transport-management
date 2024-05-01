@@ -41,3 +41,55 @@ exports.loginUser = async (req, res) => {
         res.status(500).json({ message: "An error occurred during login", error: error.message });
     }
 };
+
+// Get user details
+exports.getUserDetails = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id, {
+            attributes: { exclude: ['password'] } // Exclude password for security
+        });
+        if (!user) {
+            return res.status(404).send({ message: 'User not found.' });
+        }
+        res.send(user);
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).send({ message: 'Error fetching user details.' });
+    }
+};
+
+// Update user's password
+exports.updatePassword = async (req, res) => {
+    try {
+        const userId = req.userId;  // Assuming this is set from your auth middleware
+        const { newPassword } = req.body;
+
+        if (!newPassword) {
+            return res.status(400).send({ message: "New password not provided." });
+        }
+
+        // Retrieve user from the database
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return res.status(404).send({ message: "User not found." });
+        }
+
+        // Check if current password matches
+        if (!bcrypt.compareSync(currentPassword, user.password)) {
+            return res.status(401).send({ message: "Current password is incorrect." });
+        }
+
+        // Update password
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(newPassword, salt);
+        
+        user.password = hashedPassword;
+        await user.save();
+
+        res.send({ message: "Password updated successfully." });
+    } catch (error) {
+        console.error('Failed to update password:', error);
+        res.status(500).send({ message: 'Failed to update password.' });
+    }
+};
+
