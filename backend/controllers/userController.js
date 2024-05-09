@@ -1,8 +1,22 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const User = require('../models/User'); // Ensure this path is correct for your project structure
-require('dotenv').config(); // Ensure dotenv is configured in your entry file or here if not already
+const User = require('../models/User');
+require('dotenv').config(); 
 
+
+exports.checkSession = (req, res) => {
+    if (req.user) {
+        res.status(200).json({ isLoggedIn: true, user: req.user });
+    } else {
+        res.status(401).json({ isLoggedIn: false });
+    }
+};
+
+exports.logout = (req, res) => {
+    res.clearCookie('token');
+    res.json({ message: 'Logged out successfully' });
+};
+ 
 exports.registerUser = async (req, res) => {
     const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 8);
@@ -22,9 +36,8 @@ exports.registerUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
-
     try {
-        const user = await User.findOne({ where: { email: email } });
+        const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -35,12 +48,13 @@ exports.loginUser = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-        res.json({ message: "Login successful", token, user: { id: user.id, username: user.username, email: user.email } });
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' }); // Set cookie securely
+        res.json({ message: "Login successful", user: { id: user.id, username: user.username, email: user.email } });
     } catch (error) {
-        console.error(error);
         res.status(500).json({ message: "An error occurred during login", error: error.message });
     }
 };
+
 
 // Get user details
 exports.getUserDetails = async (req, res) => {
@@ -58,28 +72,24 @@ exports.getUserDetails = async (req, res) => {
     }
 };
 
-// Update user's password
 exports.updatePassword = async (req, res) => {
     try {
-        const userId = req.userId;  // Assuming this is set from your auth middleware
-        const { newPassword } = req.body;
+        const userId = req.user.id;  // Corrected to use decoded user information from the token
+        const { currentPassword, newPassword } = req.body;
 
-        if (!newPassword) {
-            return res.status(400).send({ message: "New password not provided." });
+        if (!newPassword || !currentPassword) {
+            return res.status(400).send({ message: "Please provide both current and new passwords." });
         }
 
-        // Retrieve user from the database
         const user = await User.findByPk(userId);
         if (!user) {
             return res.status(404).send({ message: "User not found." });
         }
 
-        // Check if current password matches
         if (!bcrypt.compareSync(currentPassword, user.password)) {
             return res.status(401).send({ message: "Current password is incorrect." });
         }
 
-        // Update password
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(newPassword, salt);
         

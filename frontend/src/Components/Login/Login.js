@@ -1,31 +1,21 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../../axiosConfig'; 
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../AuthContext'; // Import useAuth from your context
+import { useAuth } from '../AuthContext';
 import './Login.css';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate(); // For programmatic navigation
-    const { login } = useAuth(); // Access the login method from context
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/api/users/login', { email, password });
-            const data = response.data;
-            console.log("Received data from login:", data);
-            if (data.token) {
-                console.log("Login successful", data.token);
-                localStorage.setItem('token', data.token); 
-                console.log('Token stored:', localStorage.getItem('token'));// Store the token in local storage
-                login(); // Update the global state to indicate the user is logged in
-                navigate('/dashboard'); // Navigate to the dashboard after successful login
-                console.log('Token:', data.token);
-            } else {
-                console.error("Token not received");
-            }
+            await axios.post('/api/users/login', { email, password });
+            login();  // Signal that login has occurred without handling a token
+            navigate('/dashboard');  // Navigate after successful login
         } catch (error) {
             console.error("Login failed", error.response ? error.response.data.message : "No response from server");
         }

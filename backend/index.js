@@ -1,24 +1,27 @@
 const express = require('express');
-const sequelize = require('./database'); // Make sure this path correctly leads to your Sequelize setup
-const User = require('./models/User'); // Import your user model correctly
-const userRoutes = require('./routes/userRoutes'); // Make sure routes are set up correctly
-require('dotenv').config(); // Load environment variables from .env file
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const sequelize = require('./database'); 
+const User = require('./models/User');
+const userRoutes = require('./routes/userRoutes');
+require('dotenv').config();
 
 const app = express();
 
-// Middleware for parsing JSON and URL-encoded form data
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 
-// Use routes defined in other files
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use('/api/users', userRoutes);
 
-// Simple root route to test server availability
 app.get('/', (req, res) => {
     res.send('Welcome to the Transport Management System!');
 });
 
-// Sync database and start the server
 sequelize.sync().then(() => {
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
@@ -28,7 +31,6 @@ sequelize.sync().then(() => {
     console.error('Error syncing database:', error);
 });
 
-// General error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send({ error: 'Something broke!', message: err.message });

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';  // Ensure the path is correct
+import { useAuth } from '../AuthContext';  
 
 function Dashboard() {
     const { isLoggedIn } = useAuth();  // Use your AuthContext to check if logged in
@@ -11,26 +11,28 @@ function Dashboard() {
 
     useEffect(() => {
         if (!isLoggedIn) {
-            navigate('/login');  // Redirect to login if not logged in
+            console.log('Not logged in, redirecting to login.');
+            navigate('/login');  
         } else {
             fetchData();
         }
-    }, [isLoggedIn, navigate]);
+    }, [isLoggedIn, navigate]); 
 
     const fetchData = async () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const response = await axios.get('/api/dashboard/data', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                setData(response.data);  // Assuming the API returns data to be set
-            } catch (error) {
-                console.error('Failed to fetch dashboard data:', error);
-                setError('Failed to load data.');
-            }
+        try {
+            const response = await axios.get('/api/dashboard/data', {
+                withCredentials: true  
+            });
+            setData(response.data);  
+        } catch (error) {
+            console.error('Failed to fetch dashboard data:', error);
+            setError('Failed to load data.');
         }
     };
+
+    if (!isLoggedIn) {
+        return null;  // Do not render anything if not logged in
+    }
 
     return (
         <div>

@@ -5,61 +5,46 @@ import './ProfileSettings.css';
 
 export default function ProfileSettings() {
     const [user, setUser] = useState({ username: '', email: '' });
+    const [currentPassword, setCurrentPassword] = useState(''); // Add state for current password
     const [newPassword, setNewPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const token = localStorage.getItem('token');
-    console.log('Retrieved Token:', token);
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const token = localStorage.getItem('token');
-            console.log('Token from localStorage:', token); // Debug: Check what's actually in localStorage
-    
-            if (token) {
-                try {
-                    console.log('Attempting to fetch user data with token:', token); // Debug: See the token being used in the request
-                    const response = await axios.get('/api/users/me', {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-                    setUser(response.data);
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    setError('Failed to fetch user details.');
-                }
-            } else {
-                setError('No token found, please login again.');
+            try {
+                const response = await axios.get('/api/users/me', {
+                    withCredentials: true  
+                });
+                setUser(response.data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setError('Failed to fetch user details.');
             }
         };
         fetchUserData();
     }, []);
     
-
     const handlePasswordChange = async (e) => {
         e.preventDefault();
-        setError(''); // Clear previous error messages when a new submission is made
-        const token = localStorage.getItem('token');  // Retrieve the token from local storage
-        if (!token) {
-            setError('No token found, please login again.');
-            return;
-        }
-        if (!newPassword) {
-            setError('Please enter a new password.');
+        setError('');
+        if (!currentPassword || !newPassword) {
+            setError('Please enter both current and new password.');
             return;
         }
         try {
-            const response = await axios.put('/api/users/update-password', { newPassword }, {
-                headers: { Authorization: `Bearer ${token}` }
+            const response = await axios.put('/api/users/update-password', { currentPassword, newPassword }, {
+                withCredentials: true 
             });
             console.log(response.data.message);
             setSuccess('Password updated successfully.');
+            setCurrentPassword('');
             setNewPassword('');
         } catch (error) {
             console.error('Failed to update password:', error);
             setError('Failed to update password.');
         }
     };
-    
 
     return (
         <Container className="profile-settings-container">
@@ -72,7 +57,17 @@ export default function ProfileSettings() {
             </div>
             <Form className="profile-form" onSubmit={handlePasswordChange}>
                 <Form.Group>
-                    <Form.Label htmlFor="newPassword">New Password:</Form.Label>
+                    <Form.Label htmlFor="currentPassword"><strong>Current Password:</strong></Form.Label>
+                    <Form.Control
+                        type="password"
+                        id="currentPassword"
+                        className="profile-input"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                    />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label htmlFor="newPassword"><strong>New Password:</strong></Form.Label>
                     <Form.Control
                         type="password"
                         id="newPassword"
@@ -84,5 +79,5 @@ export default function ProfileSettings() {
                 <Button type="submit" className="profile-button">Change Password</Button>
             </Form>
         </Container>  
-    );    
+    );
 }
