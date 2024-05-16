@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const sequelize = require('./database'); 
 const User = require('./models/User');
 const userRoutes = require('./routes/userRoutes');
+const shipmentRoutes = require('./routes/shipmentRoutes');
 require('dotenv').config();
 
 const app = express();
@@ -35,3 +36,5 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send({ error: 'Something broke!', message: err.message });
 });
+
+app.use('/api/shipments', shipmentRoutes);

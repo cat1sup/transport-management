@@ -30,8 +30,8 @@ function NavigationBar() {
           <LinkContainer to="/dashboard">
             <Nav.Link>Dashboard</Nav.Link>
           </LinkContainer>
-          <LinkContainer to="/routes">
-            <Nav.Link>Routes</Nav.Link>
+          <LinkContainer to="/transportRoutes">
+            <Nav.Link>Transport Routes Planner</Nav.Link>
           </LinkContainer>
           <LinkContainer to="/shipments">
             <Nav.Link>Shipments</Nav.Link>

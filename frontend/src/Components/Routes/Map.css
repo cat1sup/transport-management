@@ -1,0 +1,42 @@
+/* Map.css */
+
+/* General styling for the map container */
+.personalized-map-container {
+    height: 600px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    margin: 20px 0;
+    padding: 0 20px; /* Add padding to the left and right */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Style for waypoints markers */
+.custom-marker {
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+}
+
+/* Container for the map */
+.map-wrapper {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.map-heading {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: black; /* Ensure text is black */
+}
+
+.map-description {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: black; /* Ensure text is black */
+}
+.leaflet-control-attribution {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    padding: 2px 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

@@ -9,6 +9,7 @@ import Login from './Components/Login/Login';
 import Dashboard from './Components/Dashboard/Dashboard';
 import RegistrationSuccess from './Components/Register/RegisterSuccess';
 import ProfileSettings from './Components/ProfileSettings/ProfileSettings'; 
+import TransportRoutes from './Components/Routes/TransportRoutes';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile-settings" element={<ProfileSettings />} />
+          <Route path="/transportRoutes" element={<TransportRoutes />} />
         </Routes>
       </Router>
     </AuthProvider>
