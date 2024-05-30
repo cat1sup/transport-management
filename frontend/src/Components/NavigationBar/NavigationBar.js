@@ -12,7 +12,7 @@ function NavigationBar() {
   const handleLogout = () => {
     logout();
     console.log('Logging out...');
-    navigate('/login');  // Redirect to login page after logout
+    navigate('/login'); 
   };
   console.log('Is logged in:', isLoggedIn);
   if (!isLoggedIn) {
@@ -35,6 +35,9 @@ function NavigationBar() {
           </LinkContainer>
           <LinkContainer to="/shipments">
             <Nav.Link>Shipments</Nav.Link>
+          </LinkContainer>
+          <LinkContainer to="/transportInfo">
+            <Nav.Link>Transport Info</Nav.Link>
           </LinkContainer>
           <NavDropdown title="Account" id="basic-nav-dropdown">
             <LinkContainer to="/profile-settings">

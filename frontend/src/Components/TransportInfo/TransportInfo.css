@@ -1,0 +1,93 @@
+/* TransportInfo.css */
+.transport-info-page {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.table-container {
+    width: 100%;
+    margin-bottom: 40px;
+    border: 1px solid #dee2e6; /* Subtle border around each grid */
+    border-radius: 8px; /* Rounded corners for the border */
+    padding: 20px; /* Padding inside the container */
+    background-color: #ffffff; /* Background color for the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visual separation */
+}
+
+.table-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.table-container .btn-primary {
+    margin-bottom: 20px;
+    background-color: #343a40;
+    border-color: #343a40;
+    font-size: 0.875rem; /* Smaller font size for buttons */
+    padding: 6px 12px; /* Smaller padding for buttons */
+}
+
+.table-container .btn-primary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.custom-table {
+    width: 100%;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: auto;
+    font-size: 0.875rem; /* Smaller font size for table */
+}
+
+.custom-table th,
+.custom-table td {
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+    padding: 8px; /* Smaller padding for table cells */
+}
+
+.custom-table th {
+    background-color: #343a40;
+    color: white;
+}
+
+.custom-table td {
+    background-color: #ffffff;
+}
+
+.modal-header {
+    background-color: #343a40;
+    color: white;
+}
+
+.modal-footer .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    font-size: 0.875rem; /* Smaller font size for buttons */
+    padding: 6px 12px; /* Smaller padding for buttons */
+}
+
+.modal-footer .btn-primary {
+    background-color: #343a40;
+    border-color: #343a40;
+    font-size: 0.875rem; /* Smaller font size for buttons */
+    padding: 6px 12px; /* Smaller padding for buttons */
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}

@@ -1,0 +1,242 @@
+/* Container */
+.shipments-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    height: 100vh;
+    overflow: hidden; /* Prevent page scroll */
+}
+
+.shipments-container {
+    max-width: 2000px; /* Increased width */
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Title */
+.shipments-container h1 {
+    text-align: center;
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Buttons */
+.btn-primary, .btn-secondary, .action-button {
+    background-color: #343a40;
+    border-color: #343a40;
+    color: white;
+    padding: 8px 16px;
+    font-size: 1em;
+    margin: 5px;
+    border-radius: 4px;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-primary:hover, .btn-secondary:hover, .action-button:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    color: white;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    font-size: 1em; /* Smaller button */
+    padding: 6px 12px; /* Smaller button */
+}
+
+/* Table */
+.table-responsive {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto; /* Scrollable table */
+    -webkit-overflow-scrolling: touch;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 0.5rem; /* Smaller padding */
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #343a40;
+    color: white;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Modal */
+.modal-dialog {
+    max-width: 900px; /* Increased width */
+    margin: 30px auto;
+}
+
+.modal-content {
+    border-radius: 8px;
+    padding: 20px; /* Added padding for a better look */
+}
+
+.modal-header {
+    background-color: #343a40;
+    color: white;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 8px 8px 0 0;
+    padding: 20px; /* Ensure it covers the entire heading area */
+    width: 100%; /* Extend the header to cover the entire heading area */
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.75em;
+    width: 100%; /* Extend title to cover the entire heading area */
+    text-align: center; /* Center align the title */
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 70vh; /* Allow more space at the bottom */
+    overflow-y: auto;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between; /* Align buttons to the ends */
+    gap: 10px; /* Space between buttons */
+    padding: 15px;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.intermediary-stop {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+
+.mt-3 {
+    margin-top: 1.5rem;
+}
+
+.custom-table {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.custom-table th,
+.custom-table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.custom-table th {
+    background-color: #343a40;
+    color: white;
+}
+
+.custom-table td {
+    background-color: #ffffff;
+}
+
+.action-button {
+    margin: 5px;
+    padding: 8px 16px;
+    font-size: 1em;
+    border-radius: 4px;
+    background-color: #6c757d;
+    border: none;
+    color: white;
+}
+
+.action-button:hover {
+    background-color: #5a6268;
+    border: none;
+    color: white;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.intermediary-stop {
+    margin-bottom: 10px;
+}
+
+.intermediary-stop .form-group {
+    margin-bottom: 10px;
+}
