@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Map from './Map'; 
+import { Row, Col, Card } from 'react-bootstrap';
 import { useAuth } from '../AuthContext'; 
 
 const MapPage = () => {
@@ -15,8 +16,18 @@ const MapPage = () => {
 
     return (
         <div className="map-wrapper">
-            <h1 className="map-heading">Transport Routes Planner</h1>
-            <p className="map-description">Use the map to view, navigate and plan ahead your routes with how many intermediary stops you need:</p>
+            <Row className="mb-4">
+            <Col>
+              <Card>
+                <Card.Body>
+                  <Card.Title>Transport Routes Planner</Card.Title>
+                  <Card.Text>
+                  Use the map to view, navigate and plan ahead your routes with how many intermediary stops you need:
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
             <Map />
         </div>
     );
