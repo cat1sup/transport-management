@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { Table, Button, Form, Modal } from 'react-bootstrap';
 import { useAuth } from '../AuthContext';
@@ -23,6 +23,14 @@ const Shipments = () => {
     const [currentShipmentId, setCurrentShipmentId] = useState(null);
     const [currentShipment, setCurrentShipment] = useState(null);
     const [routeInfo, setRouteInfo] = useState(null);
+    const [filters, setFilters] = useState({
+        shipmentNumber: '',
+        cargoType: '',
+        startingLocation: '',
+        stoppingLocation: '',
+        designatedDriver: '',
+        designatedVehicle: ''
+    });
     const mapRef = useRef(null);
 
     useEffect(() => {
@@ -194,37 +202,180 @@ const Shipments = () => {
         });
     };
 
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const applyFilters = useCallback(() => {
+        let filtered = shipments;
+
+        if (filters.shipmentNumber) {
+            filtered = filtered.filter((shipment) =>
+                shipment.ShipmentNumber.toLowerCase().includes(filters.shipmentNumber.toLowerCase())
+            );
+        }
+        if (filters.cargoType) {
+            filtered = filtered.filter((shipment) =>
+                shipment.CargoType.toLowerCase().includes(filters.cargoType.toLowerCase())
+            );
+        }
+        if (filters.startingLocation) {
+            filtered = filtered.filter((shipment) =>
+                shipment.StartingLocation?.Name.toLowerCase().includes(filters.startingLocation.toLowerCase())
+            );
+        }
+        if (filters.stoppingLocation) {
+            filtered = filtered.filter((shipment) =>
+                shipment.StoppingLocation?.Name.toLowerCase().includes(filters.stoppingLocation.toLowerCase())
+            );
+        }
+        if (filters.designatedDriver) {
+            filtered = filtered.filter((shipment) =>
+                shipment.DesignatedDriver?.Name.toLowerCase().includes(filters.designatedDriver.toLowerCase())
+            );
+        }
+        if (filters.designatedVehicle) {
+            filtered = filtered.filter((shipment) =>
+                shipment.DesignatedVehicle?.Name.toLowerCase().includes(filters.designatedVehicle.toLowerCase())
+            );
+        }
+
+        return filtered;
+    }, [filters, shipments]);
+
+    useEffect(() => {
+        applyFilters();
+    }, [filters, applyFilters]);
+
+    const filteredShipments = applyFilters();
+
     const downloadRoutes = () => {
         console.log('Download routes clicked');
-        if (!routeInfo) {
+        if (!routeInfo || routeInfo.length === 0) {
             console.log('No route info available');
             return;
         }
-
+    
         const doc = new jsPDF();
         doc.text('Shipment Routes', 10, 10);
-
-        const routeData = routeInfo.split('\n').map((line, index) => {
-            if (index === 0) return [line]; // Title
-            return line.split(':').map(item => item.trim()); // Splitting into columns
-        });
-
+    
+        const routeData = routeInfo.map((instruction) => [
+            `Step ${instruction.step}`,
+            instruction.text,
+        ]);
+    
         console.log('Route data:', routeData);
-
+    
         doc.autoTable({
-            head: [['Route', 'Coordinates']],
+            head: [['Step', 'Instruction']],
             body: routeData,
         });
-
+    
         doc.save(`${currentShipment.ShipmentNumber}_routes.pdf`);
     };
+    
 
     return (
         <div className="shipments-page">
             <div className="shipments-container">
                 <h1 className="title">Shipments</h1>
-                <Button variant="primary" onClick={handleShow}>Add Shipment</Button>
-
+                <div className="filters">
+                    <h5 className="filters-text">Filter By:</h5>
+                    <Form.Group controlId="filterShipmentNumber" className="filter-group">
+                        <Form.Label className="filter-label">Shipment Number</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="shipmentNumber"
+                            value={filters.shipmentNumber}
+                            onChange={handleFilterChange}
+                            className="filter-input"
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="filterCargoType" className="filter-group">
+                        <Form.Label className="filter-label">Cargo Type</Form.Label>
+                        <Form.Control
+                            as="select"
+                            name="cargoType"
+                            value={filters.cargoType}
+                            onChange={handleFilterChange}
+                            className="filter-input"
+                        >
+                            <option value="">All</option>
+                            <option value="perishable">Perishable</option>
+                            <option value="containerized">Containerized</option>
+                            <option value="dry bulk">Dry Bulk</option>
+                            <option value="liquid bulk">Liquid Bulk</option>
+                            <option value="dangerous">Dangerous</option>
+                            <option value="special purpose">Special Purpose</option>
+                            <option value="livestock">Livestock</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="filterStartingLocation" className="filter-group">
+                        <Form.Label className="filter-label">Starting Location</Form.Label>
+                        <Form.Control
+                            as="select"
+                            name="startingLocation"
+                            value={filters.startingLocation}
+                            onChange={handleFilterChange}
+                            className="filter-input"
+                        >
+                            <option value="">All</option>
+                            {transportData.stops.map((stop) => (
+                                <option key={stop.id} value={stop.Name}>{stop.Name}</option>
+                            ))}
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="filterStoppingLocation" className="filter-group">
+                        <Form.Label className="filter-label">Stopping Location</Form.Label>
+                        <Form.Control
+                            as="select"
+                            name="stoppingLocation"
+                            value={filters.stoppingLocation}
+                            onChange={handleFilterChange}
+                            className="filter-input"
+                        >
+                            <option value="">All</option>
+                            {transportData.stops.map((stop) => (
+                                <option key={stop.id} value={stop.Name}>{stop.Name}</option>
+                            ))}
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="filterDesignatedDriver" className="filter-group">
+                        <Form.Label className="filter-label">Designated Driver</Form.Label>
+                        <Form.Control
+                            as="select"
+                            name="designatedDriver"
+                            value={filters.designatedDriver}
+                            onChange={handleFilterChange}
+                            className="filter-input"
+                        >
+                            <option value="">All</option>
+                            {transportData.drivers.map((driver) => (
+                                <option key={driver.id} value={driver.Name}>{driver.Name}</option>
+                            ))}
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="filterDesignatedVehicle" className="filter-group">
+                        <Form.Label className="filter-label">Designated Vehicle</Form.Label>
+                        <Form.Control
+                            as="select"
+                            name="designatedVehicle"
+                            value={filters.designatedVehicle}
+                            onChange={handleFilterChange}
+                            className="filter-input"
+                        >
+                            <option value="">All</option>
+                            {transportData.vehicles.map((vehicle) => (
+                                <option key={vehicle.id} value={vehicle.Name}>{vehicle.Name}</option>
+                            ))}
+                        </Form.Control>
+                    </Form.Group>
+                </div>
+                <Button variant="primary" onClick={handleShow} className="mb-3">Add Shipment</Button>
                 <div className="table-responsive">
                     <Table striped bordered hover className="mt-4 custom-table">
                         <thead>
@@ -243,7 +394,7 @@ const Shipments = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {shipments.map((shipment) => (
+                            {filteredShipments.map((shipment) => (
                                 <tr key={shipment.id}>
                                     <td>{shipment.ShipmentNumber}</td>
                                     <td>{shipment.CargoType}</td>
