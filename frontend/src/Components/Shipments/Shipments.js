@@ -46,9 +46,10 @@ const Shipments = () => {
     const fetchShipments = async () => {
         try {
             const response = await axios.get('/api/shipments', { withCredentials: true });
+            console.log('Fetch shipments response:', response);
             setShipments(response.data);
         } catch (error) {
-            console.error('Error fetching shipments:', error);
+            console.error('Error fetching shipments:', error.response ? error.response.data : error.message);
         }
     };
 
@@ -80,7 +81,7 @@ const Shipments = () => {
         const { name, value } = e.target;
         setNewShipment((prevState) => ({
             ...prevState,
-            [name]: value,
+            [name]: value !== '' ? value : null,
         }));
     };
 
@@ -94,7 +95,7 @@ const Shipments = () => {
     const handleStopChange = (e, index) => {
         const { name, value } = e.target;
         const newStops = [...newShipment.IntermediaryStops];
-        newStops[index][name] = value;
+        newStops[index][name] = value !== '' ? value : null;
         setNewShipment((prevState) => ({
             ...prevState,
             IntermediaryStops: newStops,
@@ -104,20 +105,35 @@ const Shipments = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form submitted:', newShipment);
+        
+        // Helper function to convert empty strings to null
+        const convertEmptyToNull = (value) => (value === '' ? null : value);
+    
+        const shipmentData = {
+            ...newShipment,
+            DesignatedDriverId: convertEmptyToNull(newShipment.DesignatedDriverId),
+            DesignatedVehicleId: convertEmptyToNull(newShipment.DesignatedVehicleId),
+            StartingLocationId: convertEmptyToNull(newShipment.StartingLocationId),
+            StoppingLocationId: convertEmptyToNull(newShipment.StoppingLocationId),
+        };
+    
         try {
             if (isEditMode) {
                 console.log('Editing shipment:', currentShipmentId);
-                await axios.put(`/api/shipments/${currentShipmentId}`, { shipmentData: newShipment, stops: newShipment.IntermediaryStops }, { withCredentials: true });
+                const response = await axios.put(`/api/shipments/${currentShipmentId}`, { shipmentData, stops: newShipment.IntermediaryStops }, { withCredentials: true });
+                console.log('Edit response:', response.data);
             } else {
                 console.log('Creating new shipment');
-                await axios.post('/api/shipments', { shipmentData: newShipment, stops: newShipment.IntermediaryStops }, { withCredentials: true });
+                const response = await axios.post('/api/shipments', { shipmentData, stops: newShipment.IntermediaryStops }, { withCredentials: true });
+                console.log('Create response:', response.data);
             }
             fetchShipments();
             handleClose();
         } catch (error) {
-            console.error('Error creating or updating shipment:', error);
+            console.error('Error creating or updating shipment:', error.response ? error.response.data : error.message);
         }
     };
+    
 
     const handleEdit = (shipment) => {
         setNewShipment({
@@ -278,69 +294,76 @@ const Shipments = () => {
                                 />
                             </Form.Group>
                             <Form.Group controlId="DesignatedDriverId">
-                                <Form.Label>Designated Driver</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    name="DesignatedDriverId"
-                                    value={newShipment.DesignatedDriverId}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    {transportData.drivers.map((driver) => (
-                                        <option key={driver.id} value={driver.id}>
-                                            {driver.Name}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="DesignatedVehicleId">
-                                <Form.Label>Designated Vehicle</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    name="DesignatedVehicleId"
-                                    value={newShipment.DesignatedVehicleId}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    {transportData.vehicles.map((vehicle) => (
-                                        <option key={vehicle.id} value={vehicle.id}>
-                                            {vehicle.Name}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="StartingLocationId">
-                                <Form.Label>Starting Location</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    name="StartingLocationId"
-                                    value={newShipment.StartingLocationId}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    {transportData.stops.map((stop) => (
-                                        <option key={stop.id} value={stop.id}>
-                                            {stop.Name}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="StoppingLocationId">
-                                <Form.Label>Stopping Location</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    name="StoppingLocationId"
-                                    value={newShipment.StoppingLocationId}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    {transportData.stops.map((stop) => (
-                                        <option key={stop.id} value={stop.id}>
-                                            {stop.Name}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
+                            <Form.Label>Designated Driver</Form.Label>
+                            <Form.Control
+                                as="select"
+                                name="DesignatedDriverId"
+                                value={newShipment.DesignatedDriverId || ''}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select Driver</option>
+                                {transportData.drivers.map((driver) => (
+                                    <option key={driver.id} value={driver.id}>
+                                        {driver.Name}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+
+                        <Form.Group controlId="DesignatedVehicleId">
+                            <Form.Label>Designated Vehicle</Form.Label>
+                            <Form.Control
+                                as="select"
+                                name="DesignatedVehicleId"
+                                value={newShipment.DesignatedVehicleId || ''}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select Vehicle</option>
+                                {transportData.vehicles.map((vehicle) => (
+                                    <option key={vehicle.id} value={vehicle.id}>
+                                        {vehicle.Name}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+
+                        <Form.Group controlId="StartingLocationId">
+                            <Form.Label>Starting Location</Form.Label>
+                            <Form.Control
+                                as="select"
+                                name="StartingLocationId"
+                                value={newShipment.StartingLocationId || ''}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select Location</option>
+                                {transportData.stops.map((stop) => (
+                                    <option key={stop.id} value={stop.id}>
+                                        {stop.Name}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+
+                        <Form.Group controlId="StoppingLocationId">
+                            <Form.Label>Stopping Location</Form.Label>
+                            <Form.Control
+                                as="select"
+                                name="StoppingLocationId"
+                                value={newShipment.StoppingLocationId || ''}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select Location</option>
+                                {transportData.stops.map((stop) => (
+                                    <option key={stop.id} value={stop.id}>
+                                        {stop.Name}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
                             <Form.Group controlId="Status">
                                 <Form.Label>Status</Form.Label>
                                 <Form.Control

@@ -7,5 +7,6 @@ const router = express.Router();
 // Vehicle routes
 router.post('/', authMiddleware, transportInfoController.createVehicle);
 router.get('/', authMiddleware, transportInfoController.getVehicles);
-
+router.put('/:id', authMiddleware, transportInfoController.updateVehicle);
+router.delete('/:id', authMiddleware, transportInfoController.deleteVehicle); 
 module.exports = router;

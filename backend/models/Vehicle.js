@@ -24,7 +24,8 @@ const Vehicle = sequelize.define('Vehicle', {
     },
     Status: {
         type: DataTypes.ENUM('available', 'in-use'),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'available' // Set default value to 'available'
     },
     LastServiceDate: {
         type: DataTypes.DATE,

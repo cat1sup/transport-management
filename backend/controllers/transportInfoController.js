@@ -1,6 +1,35 @@
-const Stop = require('../models/Stop');
-const Driver = require('../models/Driver');
-const Vehicle = require('../models/Vehicle');
+const { Driver, Shipment, Vehicle, Stop, IntermediaryStop } = require('../models');
+
+const nullifyDriverReferences = async (driverId) => {
+    await Shipment.update(
+        { DesignatedDriverId: null },
+        { where: { DesignatedDriverId: driverId } }
+    );
+};
+
+const nullifyVehicleReferences = async (vehicleId) => {
+    await Shipment.update(
+        { DesignatedVehicleId: null },
+        { where: { DesignatedVehicleId: vehicleId } }
+    );
+    await Driver.update(
+        { VehicleId: null },
+        { where: { VehicleId: vehicleId } }
+    );
+};
+
+const nullifyStopReferences = async (stopId) => {
+    await Shipment.update(
+        { StartingLocationId: null },
+        { where: { StartingLocationId: stopId } }
+    );
+    await Shipment.update(
+        { StoppingLocationId: null },
+        { where: { StoppingLocationId: stopId } }
+    );
+    await IntermediaryStop.destroy({ where: { StopId: stopId } });
+};
+
 
 exports.createStop = async (req, res) => {
     try {
@@ -42,15 +71,33 @@ exports.getDrivers = async (req, res) => {
     }
 };
 
+
 exports.createVehicle = async (req, res) => {
     try {
-        const newVehicle = await Vehicle.create(req.body);
+        const { Name, LicensePlate, Model, Year, Capacity, Status, LastServiceDate, Mileage, InsuranceNumber, InsuranceExpiry } = req.body;
+        
+        // Ensure the Status field is set, default to 'available' if not provided
+        const vehicleData = {
+            Name,
+            LicensePlate,
+            Model,
+            Year,
+            Capacity,
+            Status: Status || 'available',
+            LastServiceDate,
+            Mileage,
+            InsuranceNumber,
+            InsuranceExpiry
+        };
+
+        const newVehicle = await Vehicle.create(vehicleData);
         res.status(201).json(newVehicle);
     } catch (error) {
         console.error('Error creating vehicle:', error);
-        res.status(500).json({ error: 'Failed to create vehicle' });
+        res.status(500).json({ message: 'Error creating vehicle', error: error.message });
     }
 };
+
 
 exports.getVehicles = async (req, res) => {
     try {
@@ -84,6 +131,10 @@ exports.deleteStop = async (req, res) => {
     const { id } = req.params;
 
     try {
+        // Nullify foreign key references
+        await nullifyStopReferences(id);
+
+        // Proceed with stop deletion
         const stop = await Stop.findByPk(id);
         if (!stop) {
             return res.status(404).json({ message: 'Stop not found' });
@@ -91,7 +142,7 @@ exports.deleteStop = async (req, res) => {
         await stop.destroy();
         res.status(200).json({ message: 'Stop deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.error('Error deleting stop:', error);
         res.status(500).json({ message: 'Error deleting stop', error: error.message });
     }
 };
@@ -119,6 +170,10 @@ exports.deleteDriver = async (req, res) => {
     const { id } = req.params;
 
     try {
+        // Nullify foreign key references
+        await nullifyDriverReferences(id);
+
+        // Proceed with driver deletion
         const driver = await Driver.findByPk(id);
         if (!driver) {
             return res.status(404).json({ message: 'Driver not found' });
@@ -126,7 +181,7 @@ exports.deleteDriver = async (req, res) => {
         await driver.destroy();
         res.status(200).json({ message: 'Driver deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.error('Error deleting driver:', error);
         res.status(500).json({ message: 'Error deleting driver', error: error.message });
     }
 };
@@ -153,6 +208,10 @@ exports.deleteVehicle = async (req, res) => {
     const { id } = req.params;
 
     try {
+        // Nullify foreign key references
+        await nullifyVehicleReferences(id);
+
+        // Proceed with vehicle deletion
         const vehicle = await Vehicle.findByPk(id);
         if (!vehicle) {
             return res.status(404).json({ message: 'Vehicle not found' });
@@ -160,7 +219,7 @@ exports.deleteVehicle = async (req, res) => {
         await vehicle.destroy();
         res.status(200).json({ message: 'Vehicle deleted successfully' });
     } catch (error) {
-        console.error(error);
+        console.error('Error deleting vehicle:', error);
         res.status(500).json({ message: 'Error deleting vehicle', error: error.message });
     }
 };

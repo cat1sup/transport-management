@@ -1,10 +1,22 @@
 const { Shipment, IntermediaryStop, Driver, Vehicle, Stop } = require('../models');
 
+
+
 exports.createShipment = async (req, res) => {
     const { shipmentData, stops } = req.body;
     console.log('Creating shipment:', shipmentData, stops);
+    
+    const convertEmptyToNull = (value) => (value === '' ? null : value);
+
     try {
-        const newShipment = await Shipment.create(shipmentData);
+        const newShipment = await Shipment.create({
+            ...shipmentData,
+            DesignatedDriverId: convertEmptyToNull(shipmentData.DesignatedDriverId),
+            DesignatedVehicleId: convertEmptyToNull(shipmentData.DesignatedVehicleId),
+            StartingLocationId: convertEmptyToNull(shipmentData.StartingLocationId),
+            StoppingLocationId: convertEmptyToNull(shipmentData.StoppingLocationId),
+        });
+
         if (stops && stops.length > 0) {
             const newStops = stops.map(stop => ({
                 ShipmentId: newShipment.id,
@@ -12,6 +24,7 @@ exports.createShipment = async (req, res) => {
             }));
             await IntermediaryStop.bulkCreate(newStops);
         }
+
         res.status(201).json({ message: 'Shipment created successfully', shipment: newShipment });
     } catch (error) {
         console.error('Error creating shipment:', error);

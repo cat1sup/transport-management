@@ -1,4 +1,3 @@
-/* TransportInfo.css */
 .transport-info-page {
     padding: 20px;
     display: flex;
@@ -11,12 +10,12 @@
 
 .table-container {
     width: 100%;
-    margin-bottom: 40px;
+    margin-bottom: 40px; /* Add more space between the grids */
     border: 1px solid #dee2e6; /* Subtle border around each grid */
     border-radius: 8px; /* Rounded corners for the border */
-    padding: 20px; /* Padding inside the container */
     background-color: #ffffff; /* Background color for the container */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visual separation */
+    padding: 20px; /* Padding inside the container */
 }
 
 .table-container h2 {
@@ -30,6 +29,7 @@
     border-color: #343a40;
     font-size: 0.875rem; /* Smaller font size for buttons */
     padding: 6px 12px; /* Smaller padding for buttons */
+    width: 100%; /* Make the add buttons span the full width */
 }
 
 .table-container .btn-primary:hover {
@@ -40,6 +40,8 @@
 .table-responsive {
     width: 100%;
     overflow-x: auto;
+    max-height: 400px; /* Fixed height for the table container */
+    overflow-y: auto; /* Scroll inside the table container */
 }
 
 .custom-table {
@@ -62,6 +64,9 @@
 .custom-table th {
     background-color: #343a40;
     color: white;
+    position: sticky; /* Make header sticky */
+    top: 0; /* Stick to the top */
+    z-index: 1; /* Ensure it is above other content */
 }
 
 .custom-table td {
@@ -73,21 +78,27 @@
     color: white;
 }
 
+.modal-footer .btn-secondary,
+.modal-footer .btn-primary {
+    font-size: 0.875rem; /* Smaller font size for buttons */
+    padding: 6px 12px; /* Smaller padding for buttons */
+}
+
 .modal-footer .btn-secondary {
     background-color: #6c757d;
     border-color: #6c757d;
-    font-size: 0.875rem; /* Smaller font size for buttons */
-    padding: 6px 12px; /* Smaller padding for buttons */
 }
 
 .modal-footer .btn-primary {
     background-color: #343a40;
     border-color: #343a40;
-    font-size: 0.875rem; /* Smaller font size for buttons */
-    padding: 6px 12px; /* Smaller padding for buttons */
 }
 
 .modal-footer .btn-primary:hover {
     background-color: #5a6268;
     border-color: #545b62;
+}
+
+.cards-info-page {
+    margin-bottom: 30px;
 }

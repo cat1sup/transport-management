@@ -9,6 +9,7 @@ const Driver = sequelize.define('Driver', {
     },
     VehicleId: {
         type: DataTypes.INTEGER,
+        allowNull: true,  // Allow null values
         references: {
             model: Vehicle,
             key: 'id'

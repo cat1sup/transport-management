@@ -66,30 +66,35 @@ const TransportInfo = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            console.log(`Submitting ${modalType}`, currentData);
             if (currentData?.id) {
                 // Update existing record
-                await axios.put(`/api/${modalType}s/${currentData.id}`, currentData);
+                const response = await axios.put(`/api/${modalType}s/${currentData.id}`, currentData, { withCredentials: true });
+                console.log('Update response:', response.data);
             } else {
                 // Create new record
-                await axios.post(`/api/${modalType}s`, currentData);
+                const response = await axios.post(`/api/${modalType}s`, currentData, { withCredentials: true });
+                console.log('Create response:', response.data);
             }
             handleClose();
             fetchStops();
             fetchDrivers();
             fetchVehicles();
         } catch (error) {
-            console.error(`Error saving ${modalType}:`, error);
+            console.error(`Error saving ${modalType}:`, error.response ? error.response.data : error.message);
         }
     };
 
     const handleDelete = async (type, id) => {
         try {
-            await axios.delete(`/api/${type}s/${id}`);
+            console.log(`Deleting ${type} with ID ${id}`);
+            const response = await axios.delete(`/api/${type}s/${id}`, { withCredentials: true });
+            console.log('Delete response:', response.data);
             fetchStops();
             fetchDrivers();
             fetchVehicles();
         } catch (error) {
-            console.error(`Error deleting ${type}:`, error);
+            console.error(`Error deleting ${type}:`, error.response ? error.response.data : error.message);
         }
     };
 
@@ -277,6 +282,7 @@ const TransportInfo = () => {
 
     return (
         <div className="transport-info-page">
+            <div className="cards-info-page">
             <div className="table-container">
                 <h2>Stops</h2>
                 <Button variant="primary" onClick={() => handleShow('stop')}>Add Stop</Button>
@@ -371,6 +377,7 @@ const TransportInfo = () => {
                     </Form>
                 </Modal.Body>
             </Modal>
+        </div>
         </div>
     );
 };
