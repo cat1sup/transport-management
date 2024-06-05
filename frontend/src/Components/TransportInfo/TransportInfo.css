@@ -40,8 +40,8 @@
 .table-responsive {
     width: 100%;
     overflow-x: auto;
-    max-height: 400px; /* Fixed height for the table container */
-    overflow-y: auto; /* Scroll inside the table container */
+    max-height: 400px; 
+    overflow-y: auto; 
 }
 
 .custom-table {

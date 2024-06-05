@@ -39,6 +39,9 @@ function NavigationBar() {
           <LinkContainer to="/transportInfo">
             <Nav.Link>Transport Info</Nav.Link>
           </LinkContainer>
+          <LinkContainer to="/history">
+            <Nav.Link>History</Nav.Link>
+          </LinkContainer>
           <NavDropdown title="Account" id="basic-nav-dropdown">
             <LinkContainer to="/profile-settings">
               <NavDropdown.Item>Profile Settings</NavDropdown.Item>

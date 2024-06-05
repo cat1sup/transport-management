@@ -1,6 +1,4 @@
-const { Shipment, IntermediaryStop, Driver, Vehicle, Stop } = require('../models');
-
-
+const { Shipment, IntermediaryStop, Driver, Vehicle, Stop, Op } = require('../models');
 
 exports.createShipment = async (req, res) => {
     const { shipmentData, stops } = req.body;
@@ -96,5 +94,60 @@ exports.getTransportInfo = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error fetching transport info', error: error.message });
+    }
+};
+
+// New methods for fetching history
+exports.getDriverHistory = async (req, res) => {
+    const { driverId } = req.params;
+    const { startDate, endDate } = req.query;
+
+    try {
+        const whereClause = {
+            DesignatedDriverId: driverId,
+            ...(startDate && endDate && { createdAt: { [Op.between]: [new Date(startDate), new Date(endDate)] } })
+        };
+
+        const driverHistory = await Shipment.findAll({
+            where: whereClause,
+            include: [
+                { model: Driver, as: 'DesignatedDriver' },
+                { model: Vehicle, as: 'DesignatedVehicle' },
+                { model: Stop, as: 'StartingLocation' },
+                { model: Stop, as: 'StoppingLocation' }
+            ]
+        });
+
+        res.status(200).json(driverHistory);
+    } catch (error) {
+        console.error('Error fetching driver history:', error);
+        res.status(500).json({ message: 'Error fetching driver history', error: error.message });
+    }
+};
+
+exports.getVehicleHistory = async (req, res) => {
+    const { vehicleId } = req.params;
+    const { startDate, endDate } = req.query;
+
+    try {
+        const whereClause = {
+            DesignatedVehicleId: vehicleId,
+            ...(startDate && endDate && { createdAt: { [Op.between]: [new Date(startDate), new Date(endDate)] } })
+        };
+
+        const vehicleHistory = await Shipment.findAll({
+            where: whereClause,
+            include: [
+                { model: Driver, as: 'DesignatedDriver' },
+                { model: Vehicle, as: 'DesignatedVehicle' },
+                { model: Stop, as: 'StartingLocation' },
+                { model: Stop, as: 'StoppingLocation' }
+            ]
+        });
+
+        res.status(200).json(vehicleHistory);
+    } catch (error) {
+        console.error('Error fetching vehicle history:', error);
+        res.status(500).json({ message: 'Error fetching vehicle history', error: error.message });
     }
 };

@@ -3,16 +3,16 @@ const router = express.Router();
 const shipmentController = require('../controllers/shipmentController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Route for creating a shipment
+// Route for getting shipment history by driver ID
+router.get('/driver/:driverId/history', authMiddleware, shipmentController.getDriverHistory);
+
+// Route for getting shipment history by vehicle ID
+router.get('/vehicle/:vehicleId/history', authMiddleware, shipmentController.getVehicleHistory);
+
+// Other shipment routes...
 router.post('/', authMiddleware, shipmentController.createShipment);
-
-// Route for getting all shipments
 router.get('/', authMiddleware, shipmentController.getShipments);
-
-// Route for updating a shipment by ID
 router.put('/:id', authMiddleware, shipmentController.updateShipment);
-
-// Route for deleting a shipment by ID
 router.delete('/:id', authMiddleware, shipmentController.deleteShipment);
 
 module.exports = router;

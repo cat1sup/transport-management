@@ -12,6 +12,7 @@ import ProfileSettings from './Components/ProfileSettings/ProfileSettings';
 import TransportRoutes from './Components/Routes/TransportRoutes';
 import Shipments from './Components/Shipments/Shipments';
 import TransportInfo from './Components/TransportInfo/TransportInfo';
+import History from './Components/History/History';
 
 const App = () => (
   <AuthProvider>
@@ -38,6 +39,7 @@ const Main = () => {
         <Route path="/transportRoutes" element={<TransportRoutes />} />
         <Route path="/shipments" element={<Shipments />} />
         <Route path="/transportInfo" element={<TransportInfo />} />
+        <Route path="/history" element={<History />} />
       </Routes>
     </>
   );

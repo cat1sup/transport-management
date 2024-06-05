@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table, Button, Form, Modal } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 import './TransportInfo.css';
 
 const TransportInfo = () => {
@@ -10,12 +11,28 @@ const TransportInfo = () => {
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState('');
     const [currentData, setCurrentData] = useState(null);
+    const location = useLocation();
 
     useEffect(() => {
         fetchStops();
         fetchDrivers();
         fetchVehicles();
     }, []);
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const type = queryParams.get('type');
+        const id = queryParams.get('id');
+        if (type && id) {
+            if (type === 'driver') {
+                const driver = drivers.find(d => d.id === parseInt(id));
+                if (driver) handleShow(type, driver);
+            } else if (type === 'vehicle') {
+                const vehicle = vehicles.find(v => v.id === parseInt(id));
+                if (vehicle) handleShow(type, vehicle);
+            }
+        }
+    }, [location.search, drivers, vehicles]);
 
     const fetchStops = async () => {
         try {

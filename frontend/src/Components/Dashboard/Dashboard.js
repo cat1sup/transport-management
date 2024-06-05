@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';  
+import { useAuth } from '../AuthContext';
 import { Row, Col, Card } from 'react-bootstrap';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import dayjs from 'dayjs';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -18,7 +19,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-        navigate('/login');
+      navigate('/login');
     }
   }, [isLoggedIn, navigate]);
 
@@ -52,6 +53,27 @@ const Dashboard = () => {
     }
   };
 
+  const formatDate = (tickItem) => {
+    return dayjs(tickItem).format('MM-DD-YYYY');
+  };
+
+  const aggregateShipmentsByDate = (shipments) => {
+    const aggregatedData = {};
+
+    shipments.forEach((shipment) => {
+      const date = dayjs(shipment.createdAt).format('YYYY-MM-DD');
+      if (!aggregatedData[date]) {
+        aggregatedData[date] = {
+          date,
+          NumberOfPallets: 0,
+        };
+      }
+      aggregatedData[date].NumberOfPallets += shipment.NumberOfPallets;
+    });
+
+    return Object.values(aggregatedData);
+  };
+
   const statusData = [
     { name: 'Planned', value: shipments.filter(shipment => shipment.Status === 'Planned').length },
     { name: 'Ongoing', value: shipments.filter(shipment => shipment.Status === 'Ongoing').length },
@@ -60,107 +82,117 @@ const Dashboard = () => {
 
   const driverData = transportData.drivers.map(driver => ({
     name: driver.Name,
+    id: driver.id,
     shipments: shipments.filter(shipment => shipment.DesignatedDriverId === driver.id).length
   }));
 
   const vehicleData = transportData.vehicles.map(vehicle => ({
     name: vehicle.Name,
+    id: vehicle.id,
     shipments: shipments.filter(shipment => shipment.DesignatedVehicleId === vehicle.id).length
   }));
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
+  const handleBarClick = (data, type) => {
+    if (type === 'driver') {
+      navigate(`/transportInfo?type=driver&id=${data.id}`);
+    } else if (type === 'vehicle') {
+      navigate(`/transportInfo?type=vehicle&id=${data.id}`);
+    }
+  };
+
   return (
     <div className="dashboard-page">
-        <div className="cards-container">
-      <Row className="mb-4">
-        <Col>
-          <Card>
-            <Card.Body>
-              <Card.Title>Welcome to the Transport Management Dashboard</Card.Title>
-              <Card.Text>
-                This dashboard provides an overview of the transportation data, including shipments, drivers, vehicles, and stops.
-                Use the graphs below to get insights into the current state of the transportation operations.
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      <div className="cards-container">
+        <Row className="mb-4">
+          <Col>
+            <Card>
+              <Card.Body>
+                <Card.Title>Welcome to the Transport Management Dashboard</Card.Title>
+                <Card.Text>
+                  This dashboard provides an overview of the transportation data, including shipments, drivers, vehicles, and stops.
+                  Use the graphs below to get insights into the current state of the transportation operations.
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
-      <Row className="mb-4">
-        <Col md={6}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Shipment Status Distribution</Card.Title>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#8884d8" label>
-                    {statusData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={6}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Shipments by Driver</Card.Title>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={driverData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="shipments" fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+        <Row className="mb-4">
+          <Col md={6}>
+            <Card>
+              <Card.Body>
+                <Card.Title>Shipment Status Distribution</Card.Title>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#8884d8" label>
+                      {statusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card>
+              <Card.Body>
+                <Card.Title>Shipments by Driver</Card.Title>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={driverData} onClick={(data) => handleBarClick(data.activePayload[0].payload, 'driver')}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="shipments" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
-      <Row className="mb-4">
-        <Col md={6}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Shipments by Vehicle</Card.Title>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={vehicleData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="shipments" fill="#82ca9d" />
-                </BarChart>
-              </ResponsiveContainer>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={6}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Shipments Over Time</Card.Title>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={shipments}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="createdAt" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="NumberOfPallets" stroke="#8884d8" activeDot={{ r: 8 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+        <Row className="mb-4">
+          <Col md={6}>
+            <Card>
+              <Card.Body>
+                <Card.Title>Shipments by Vehicle</Card.Title>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={vehicleData} onClick={(data) => handleBarClick(data.activePayload[0].payload, 'vehicle')}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="shipments" fill="#82ca9d" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card>
+              <Card.Body>
+                <Card.Title>Shipments Over Time</Card.Title>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={aggregateShipmentsByDate(shipments)}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" tickFormatter={formatDate} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="NumberOfPallets" stroke="#8884d8" activeDot={{ r: 8 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       </div>
     </div>
   );

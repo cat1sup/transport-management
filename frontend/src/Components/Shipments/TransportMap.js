@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
@@ -12,14 +12,32 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const TransportMap = ({ coordinates }) => {
+const TransportMap = forwardRef(({ coordinates, setRouteInfo }, ref) => {
     const mapRef = useRef(null);
     const mapContainerRef = useRef(null);
     const routingControlRef = useRef(null);
 
+    useImperativeHandle(ref, () => ({
+        getRoutes: () => {
+            if (routingControlRef.current) {
+                const routes = routingControlRef.current.getRoutes();
+                if (routes.length > 0) {
+                    const routeSummary = routes[0].summary;
+                    const routeInfoStr = `
+Distance: ${routeSummary.totalDistance} meters
+Time: ${routeSummary.totalTime} seconds
+Waypoints:
+${routes[0].waypoints.map((wp, i) => `Waypoint ${i + 1}: (${wp.latLng.lat}, ${wp.latLng.lng})`).join('\n')}
+                    `;
+                    setRouteInfo(routeInfoStr);
+                }
+            }
+        }
+    }));
+
     useEffect(() => {
         if (!mapRef.current) {
-            mapRef.current = L.map(mapContainerRef.current).setView([coordinates[0][0], coordinates[0][1]], 6);
+            mapRef.current = L.map(mapContainerRef.current).setView([44.435661, 25.974910], 6);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
@@ -62,6 +80,6 @@ const TransportMap = ({ coordinates }) => {
     }, [coordinates]);
 
     return <div id="map" ref={mapContainerRef} className="map-container personalized-map-container"></div>;
-};
+});
 
 export default TransportMap;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const Map = () => {
+const Map = forwardRef((props, ref) => {
     const mapRef = useRef(null);
     const mapContainerRef = useRef(null);
     const routingControlRef = useRef(null);
@@ -30,7 +30,7 @@ const Map = () => {
                 waypoints: [
                     L.latLng(44.435523, 25.974899),
                     L.latLng(44.424466, 26.047225),
-                    L.latLng(44.435661, 26.102294),                   
+                    L.latLng(44.435661, 26.102294),
                     L.latLng(44.407258, 26.120977)
                 ],
                 routeWhileDragging: true,
@@ -67,7 +67,23 @@ const Map = () => {
         };
     }, []);
 
+    useImperativeHandle(ref, () => ({
+        getRoutes() {
+            if (routingControlRef.current) {
+                const routes = routingControlRef.current._routes;
+                if (routes) {
+                    return routes.map(route => {
+                        return route.instructions.map(instruction => {
+                            return `${instruction.text} (${instruction.distance} meters, ${instruction.time} seconds)`;
+                        }).join('\n');
+                    }).join('\n\n');
+                }
+            }
+            return 'No routes available';
+        }
+    }));
+
     return <div id="map" ref={mapContainerRef} className="map-container personalized-map-container"></div>;
-};
+});
 
 export default Map;

@@ -6,11 +6,11 @@
     justify-content: flex-start;
     padding: 20px;
     height: 100vh;
-    overflow: hidden; /* Prevent page scroll */
+    overflow: hidden;
 }
 
 .shipments-container {
-    max-width: 2000px; /* Increased width */
+    max-width: 2000px; 
     width: 100%;
     background-color: #ffffff;
     border-radius: 10px;
