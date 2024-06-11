@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useEffect, useRef, forwardRef, useImperativeHandle, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
@@ -17,6 +17,7 @@ const Map = forwardRef((props, ref) => {
     const mapRef = useRef(null);
     const mapContainerRef = useRef(null);
     const routingControlRef = useRef(null);
+    const [markers, setMarkers] = useState([]);
 
     useEffect(() => {
         if (!mapRef.current) {
@@ -80,6 +81,34 @@ const Map = forwardRef((props, ref) => {
                 }
             }
             return 'No routes available';
+        },
+        addMarker(lat, lng) {
+            if (mapRef.current && routingControlRef.current) {
+                const marker = L.marker([lat, lng], {
+                    draggable: true,
+                    icon: L.icon({
+                        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41],
+                        className: 'custom-marker'
+                    })
+                }).addTo(mapRef.current).bindPopup(`New Marker (${lat}, ${lng})`).openPopup();
+                marker.on('click', function () {
+                    if (window.confirm('Do you want to remove this marker?')) {
+                        mapRef.current.removeLayer(marker);
+                        const newMarkers = markers.filter(m => m !== marker);
+                        setMarkers(newMarkers);
+                        routingControlRef.current.setWaypoints(newMarkers.map(m => m.getLatLng()));
+                    }
+                });
+
+                const newMarkers = [...markers, marker];
+                setMarkers(newMarkers);
+                routingControlRef.current.setWaypoints(newMarkers.map(m => L.latLng(m.getLatLng())));
+                mapRef.current.setView([lat, lng], 10);
+            }
         }
     }));
 

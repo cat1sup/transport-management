@@ -1,0 +1,53 @@
+.map-wrapper {
+    padding: 20px;
+    overflow-y: auto; /* Allow vertical scrolling */
+    max-height: 100vh; /* Ensure the content does not overflow the viewport height */
+}
+
+.map-wrapper .card {
+    margin-bottom: 20px;
+}
+
+.map-wrapper .input-field {
+    width: 250px; /* Increase the width to make inputs bigger */
+}
+
+.map-wrapper .add-marker-button {
+    height: 38px; /* Adjust to match the input field height */
+}
+
+.map-wrapper .download-button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.form-inline .form-group {
+    margin-right: 10px; /* Reduce space between form groups */
+    margin-bottom: 0; /* Align form groups vertically */
+}
+
+.inputsWaypoint {
+    display: flex;
+    justify-content:start;
+    margin-left: 10px; 
+    align-items: center;
+    gap: 40px;
+}
+
+.add-marker-button btn btn-primary {
+    margin-left: 10px;
+    margin-top: 15px;
+}
+
+.inputsMarker {
+    display: flex;
+    justify-content:start;
+    align-items:last baseline;
+    gap: 40px;
+}
+
+@media (min-width: 768px) {
+    .map-wrapper .d-flex {
+        justify-content: space-between;
+    }
+}

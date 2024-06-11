@@ -10,6 +10,7 @@ const History = () => {
     const navigate = useNavigate();
     const [drivers, setDrivers] = useState([]);
     const [vehicles, setVehicles] = useState([]);
+    const [shipments, setShipments] = useState([]);
     const [selectedDriver, setSelectedDriver] = useState('');
     const [selectedVehicle, setSelectedVehicle] = useState('');
     const [driverHistory, setDriverHistory] = useState([]);
@@ -23,6 +24,7 @@ const History = () => {
         } else {
             fetchDrivers();
             fetchVehicles();
+            fetchShipments();
         }
     }, [isLoggedIn, navigate]);
 
@@ -30,6 +32,7 @@ const History = () => {
         try {
             const response = await axios.get('/api/drivers', { withCredentials: true });
             setDrivers(response.data);
+            console.log('Drivers fetched:', response.data);
         } catch (error) {
             console.error('Error fetching drivers:', error);
         }
@@ -39,32 +42,21 @@ const History = () => {
         try {
             const response = await axios.get('/api/vehicles', { withCredentials: true });
             setVehicles(response.data);
+            console.log('Vehicles fetched:', response.data);
         } catch (error) {
             console.error('Error fetching vehicles:', error);
         }
     };
 
-    const fetchDriverHistory = async () => {
+    const fetchShipments = async () => {
         try {
-            const response = await axios.get(`/api/shipments/driver/${selectedDriver}/history`, {
-                params: { startDate, endDate },
-                withCredentials: true
-            });
+            const response = await axios.get('/api/shipments', { withCredentials: true });
+            setShipments(response.data);
             setDriverHistory(response.data);
-        } catch (error) {
-            console.error('Error fetching driver history:', error);
-        }
-    };
-
-    const fetchVehicleHistory = async () => {
-        try {
-            const response = await axios.get(`/api/shipments/vehicle/${selectedVehicle}/history`, {
-                params: { startDate, endDate },
-                withCredentials: true
-            });
             setVehicleHistory(response.data);
+            console.log('Shipments fetched:', response.data);
         } catch (error) {
-            console.error('Error fetching vehicle history:', error);
+            console.error('Error fetching shipments:', error);
         }
     };
 
@@ -74,8 +66,31 @@ const History = () => {
     const handleEndDateChange = (e) => setEndDate(e.target.value);
 
     const handleSearch = () => {
-        if (selectedDriver) fetchDriverHistory();
-        if (selectedVehicle) fetchVehicleHistory();
+        console.log('Search parameters:', { selectedDriver, selectedVehicle, startDate, endDate });
+
+        const filteredDriverHistory = shipments.filter((shipment) => {
+            const shipmentDate = new Date(shipment.createdAt).toISOString().split('T')[0];
+            const driverMatch = selectedDriver ? shipment.DesignatedDriverId === parseInt(selectedDriver, 10) : true;
+            const startDateMatch = startDate ? shipmentDate >= startDate : true;
+            const endDateMatch = endDate ? shipmentDate <= endDate : true;
+
+            return driverMatch && startDateMatch && endDateMatch;
+        });
+
+        const filteredVehicleHistory = shipments.filter((shipment) => {
+            const shipmentDate = new Date(shipment.createdAt).toISOString().split('T')[0];
+            const vehicleMatch = selectedVehicle ? shipment.DesignatedVehicleId === parseInt(selectedVehicle, 10) : true;
+            const startDateMatch = startDate ? shipmentDate >= startDate : true;
+            const endDateMatch = endDate ? shipmentDate <= endDate : true;
+
+            return vehicleMatch && startDateMatch && endDateMatch;
+        });
+
+        console.log('Filtered Driver History:', filteredDriverHistory);
+        console.log('Filtered Vehicle History:', filteredVehicleHistory);
+
+        setDriverHistory(filteredDriverHistory);
+        setVehicleHistory(filteredVehicleHistory);
     };
 
     return (
@@ -137,20 +152,24 @@ const History = () => {
                         <thead>
                             <tr>
                                 <th>Shipment Number</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
+                                <th>Date</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {driverHistory.map((shipment) => (
-                                <tr key={shipment.id}>
-                                    <td>{shipment.ShipmentNumber}</td>
-                                    <td>{new Date(shipment.createdAt).toLocaleDateString()}</td>
-                                    <td>{new Date(shipment.updatedAt).toLocaleDateString()}</td>
-                                    <td>{shipment.Status}</td>
+                            {driverHistory.length === 0 ? (
+                                <tr>
+                                    <td colSpan="3">No driver history found</td>
                                 </tr>
-                            ))}
+                            ) : (
+                                driverHistory.map((shipment) => (
+                                    <tr key={shipment.id}>
+                                        <td>{shipment.ShipmentNumber}</td>
+                                        <td>{new Date(shipment.createdAt).toLocaleDateString()}</td>
+                                        <td>{shipment.Status}</td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </Table>
                 </Col>
@@ -160,20 +179,24 @@ const History = () => {
                         <thead>
                             <tr>
                                 <th>Shipment Number</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
+                                <th>Date</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {vehicleHistory.map((shipment) => (
-                                <tr key={shipment.id}>
-                                    <td>{shipment.ShipmentNumber}</td>
-                                    <td>{new Date(shipment.createdAt).toLocaleDateString()}</td>
-                                    <td>{new Date(shipment.updatedAt).toLocaleDateString()}</td>
-                                    <td>{shipment.Status}</td>
+                            {vehicleHistory.length === 0 ? (
+                                <tr>
+                                    <td colSpan="3">No vehicle history found</td>
                                 </tr>
-                            ))}
+                            ) : (
+                                vehicleHistory.map((shipment) => (
+                                    <tr key={shipment.id}>
+                                        <td>{shipment.ShipmentNumber}</td>
+                                        <td>{new Date(shipment.createdAt).toLocaleDateString()}</td>
+                                        <td>{shipment.Status}</td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </Table>
                 </Col>
