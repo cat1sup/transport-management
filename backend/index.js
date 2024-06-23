@@ -32,7 +32,6 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Transport Management System!');
 });
 
-// Initialize associations before syncing the database
 initAssociations();
 
 sequelize.sync().then(() => {

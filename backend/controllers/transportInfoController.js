@@ -63,7 +63,12 @@ exports.createDriver = async (req, res) => {
 
 exports.getDrivers = async (req, res) => {
     try {
-        const drivers = await Driver.findAll();
+        const drivers = await Driver.findAll({
+            include: {
+                model: Vehicle,
+                as: 'Vehicle'
+            }
+        });
         res.status(200).json(drivers);
     } catch (error) {
         console.error('Error fetching drivers:', error);
@@ -76,7 +81,6 @@ exports.createVehicle = async (req, res) => {
     try {
         const { Name, LicensePlate, Model, Year, Capacity, Status, LastServiceDate, Mileage, InsuranceNumber, InsuranceExpiry } = req.body;
         
-        // Ensure the Status field is set, default to 'available' if not provided
         const vehicleData = {
             Name,
             LicensePlate,
@@ -126,15 +130,10 @@ exports.updateStop = async (req, res) => {
     }
 };
 
-// Delete Stop
 exports.deleteStop = async (req, res) => {
     const { id } = req.params;
-
     try {
-        // Nullify foreign key references
         await nullifyStopReferences(id);
-
-        // Proceed with stop deletion
         const stop = await Stop.findByPk(id);
         if (!stop) {
             return res.status(404).json({ message: 'Stop not found' });
@@ -148,17 +147,27 @@ exports.deleteStop = async (req, res) => {
 };
 
 
-// Update Driver
 exports.updateDriver = async (req, res) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const { Name, VehicleId, LicenseType, PhoneNumber, Email, Address, HireDate, DateOfBirth, EmergencyContact, Status } = req.body;
 
     try {
         const driver = await Driver.findByPk(id);
         if (!driver) {
             return res.status(404).json({ message: 'Driver not found' });
         }
-        await driver.update({ name });
+        await driver.update({
+            Name,
+            VehicleId,
+            LicenseType,
+            PhoneNumber,
+            Email,
+            Address,
+            HireDate,
+            DateOfBirth,
+            EmergencyContact,
+            Status
+        });
         res.status(200).json({ message: 'Driver updated successfully' });
     } catch (error) {
         console.error(error);
@@ -166,14 +175,12 @@ exports.updateDriver = async (req, res) => {
     }
 };
 
+
 exports.deleteDriver = async (req, res) => {
     const { id } = req.params;
 
     try {
-        // Nullify foreign key references
         await nullifyDriverReferences(id);
-
-        // Proceed with driver deletion
         const driver = await Driver.findByPk(id);
         if (!driver) {
             return res.status(404).json({ message: 'Driver not found' });
@@ -186,17 +193,27 @@ exports.deleteDriver = async (req, res) => {
     }
 };
 
-// Update Vehicle
 exports.updateVehicle = async (req, res) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const { Name, LicensePlate, Model, Year, Capacity, Status, LastServiceDate, Mileage, InsuranceNumber, InsuranceExpiry } = req.body;
 
     try {
         const vehicle = await Vehicle.findByPk(id);
         if (!vehicle) {
             return res.status(404).json({ message: 'Vehicle not found' });
         }
-        await vehicle.update({ name });
+        await vehicle.update({
+            Name,
+            LicensePlate,
+            Model,
+            Year,
+            Capacity,
+            Status,
+            LastServiceDate,
+            Mileage,
+            InsuranceNumber,
+            InsuranceExpiry
+        });
         res.status(200).json({ message: 'Vehicle updated successfully' });
     } catch (error) {
         console.error(error);
@@ -204,14 +221,14 @@ exports.updateVehicle = async (req, res) => {
     }
 };
 
+
 exports.deleteVehicle = async (req, res) => {
     const { id } = req.params;
 
     try {
-        // Nullify foreign key references
         await nullifyVehicleReferences(id);
 
-        // Proceed with vehicle deletion
+
         const vehicle = await Vehicle.findByPk(id);
         if (!vehicle) {
             return res.status(404).json({ message: 'Vehicle not found' });

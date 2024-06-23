@@ -14,8 +14,8 @@ export default function Login() {
         e.preventDefault();
         try {
             await axios.post('/api/users/login', { email, password });
-            login();  // Signal that login has occurred without handling a token
-            navigate('/dashboard');  // Navigate after successful login
+            login();
+            navigate('/dashboard'); 
         } catch (error) {
             console.error("Login failed", error.response ? error.response.data.message : "No response from server");
         }

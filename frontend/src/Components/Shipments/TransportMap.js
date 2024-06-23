@@ -80,7 +80,7 @@ const TransportMap = forwardRef(({ coordinates, setRouteInfo }, ref) => {
                         }
                     }
                 });
-                mapRef.current.off();  // Remove all event listeners
+                mapRef.current.off();
                 mapRef.current.remove();
                 mapRef.current = null;
             }

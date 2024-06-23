@@ -20,19 +20,19 @@ const Shipment = sequelize.define('Shipment', {
     },
     DesignatedDriverId: {
         type: DataTypes.INTEGER,
-        allowNull: true  // Allow null values
+        allowNull: true
     },
     DesignatedVehicleId: {
         type: DataTypes.INTEGER,
-        allowNull: true  // Allow null values
+        allowNull: true  
     },
     StartingLocationId: {
         type: DataTypes.INTEGER,
-        allowNull: true  // Allow null values
+        allowNull: true  
     },
     StoppingLocationId: {
         type: DataTypes.INTEGER,
-        allowNull: true  // Allow null values
+        allowNull: true  
     },
     Status: {
         type: DataTypes.ENUM('Planned', 'Ongoing', 'Finished'),

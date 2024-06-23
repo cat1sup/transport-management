@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Register.css'; // Assuming the styles are similar and can be reused
+import './Register.css';
 
 const RegistrationSuccess = () => {
     const navigate = useNavigate();

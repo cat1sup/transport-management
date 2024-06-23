@@ -126,7 +126,6 @@ const Shipments = () => {
         e.preventDefault();
         console.log('Form submitted:', newShipment);
         
-        // Helper function to convert empty strings to null
         const convertEmptyToNull = (value) => (value === '' ? null : value);
     
         const shipmentData = {
@@ -137,7 +136,6 @@ const Shipments = () => {
             StoppingLocationId: convertEmptyToNull(newShipment.StoppingLocationId),
         };
 
-        // Filter out intermediary stops with empty StopId
         const filteredStops = newShipment.IntermediaryStops.filter(stop => stop.StopId !== '');
 
         try {

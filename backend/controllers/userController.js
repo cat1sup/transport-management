@@ -48,7 +48,7 @@ exports.loginUser = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' }); // Set cookie securely
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' }); 
         res.json({ message: "Login successful", user: { id: user.id, username: user.username, email: user.email } });
     } catch (error) {
         res.status(500).json({ message: "An error occurred during login", error: error.message });
@@ -56,11 +56,11 @@ exports.loginUser = async (req, res) => {
 };
 
 
-// Get user details
+
 exports.getUserDetails = async (req, res) => {
     try {
         const user = await User.findByPk(req.user.id, {
-            attributes: { exclude: ['password'] } // Exclude password for security
+            attributes: { exclude: ['password'] } 
         });
         if (!user) {
             return res.status(404).send({ message: 'User not found.' });
@@ -74,7 +74,7 @@ exports.getUserDetails = async (req, res) => {
 
 exports.updatePassword = async (req, res) => {
     try {
-        const userId = req.user.id;  // Corrected to use decoded user information from the token
+        const userId = req.user.id; 
         const { currentPassword, newPassword } = req.body;
 
         if (!newPassword || !currentPassword) {

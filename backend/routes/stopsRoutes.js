@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', authMiddleware, transportInfoController.createStop);
 router.get('/', authMiddleware, transportInfoController.getStops);
-router.put('/:id', authMiddleware, transportInfoController.updateStop); // Update Stop
-router.delete('/:id', authMiddleware, transportInfoController.deleteStop); // Delete Stop
+router.put('/:id', authMiddleware, transportInfoController.updateStop);
+router.delete('/:id', authMiddleware, transportInfoController.deleteStop);
 
 module.exports = router;

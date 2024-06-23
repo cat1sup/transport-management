@@ -85,18 +85,16 @@ const TransportInfo = () => {
         try {
             console.log(`Submitting ${modalType}`, currentData);
             if (currentData?.id) {
-                // Update existing record
-                const response = await axios.put(`/api/${modalType}s/${currentData.id}`, currentData, { withCredentials: true });
-                console.log('Update response:', response.data);
+
+                await axios.put(`/api/${modalType}s/${currentData.id}`, currentData, { withCredentials: true });
             } else {
-                // Create new record
-                const response = await axios.post(`/api/${modalType}s`, currentData, { withCredentials: true });
-                console.log('Create response:', response.data);
+
+                await axios.post(`/api/${modalType}s`, currentData, { withCredentials: true });
             }
             handleClose();
-            fetchStops();
-            fetchDrivers();
-            fetchVehicles();
+            await fetchStops();
+            await fetchDrivers();
+            await fetchVehicles();
         } catch (error) {
             console.error(`Error saving ${modalType}:`, error.response ? error.response.data : error.message);
         }
@@ -105,11 +103,10 @@ const TransportInfo = () => {
     const handleDelete = async (type, id) => {
         try {
             console.log(`Deleting ${type} with ID ${id}`);
-            const response = await axios.delete(`/api/${type}s/${id}`, { withCredentials: true });
-            console.log('Delete response:', response.data);
-            fetchStops();
-            fetchDrivers();
-            fetchVehicles();
+            await axios.delete(`/api/${type}s/${id}`, { withCredentials: true });
+            await fetchStops();
+            await fetchDrivers();
+            await fetchVehicles();
         } catch (error) {
             console.error(`Error deleting ${type}:`, error.response ? error.response.data : error.message);
         }
@@ -131,7 +128,7 @@ const TransportInfo = () => {
                 )}
                 {type === 'driver' && (
                     <>
-                        <td>{item.Vehicle}</td>
+                        <td>{item.Vehicle ? item.Vehicle.Name : 'N/A'}</td>
                         <td>{item.LicenseType}</td>
                         <td>{item.PhoneNumber}</td>
                         <td>{item.Email}</td>
@@ -203,9 +200,16 @@ const TransportInfo = () => {
                             <Form.Label>Name</Form.Label>
                             <Form.Control type="text" name="Name" value={currentData?.Name || ''} onChange={handleChange} required />
                         </Form.Group>
-                        <Form.Group controlId="Vehicle">
+                        <Form.Group controlId="VehicleId">
                             <Form.Label>Vehicle</Form.Label>
-                            <Form.Control type="text" name="Vehicle" value={currentData?.Vehicle || ''} onChange={handleChange} required />
+                            <Form.Control as="select" name="VehicleId" value={currentData?.VehicleId || ''} onChange={handleChange} required>
+                                <option value="">Select Vehicle</option>
+                                {vehicles.map((vehicle) => (
+                                    <option key={vehicle.id} value={vehicle.id}>
+                                        {vehicle.Name}
+                                    </option>
+                                ))}
+                            </Form.Control>
                         </Form.Group>
                         <Form.Group controlId="LicenseType">
                             <Form.Label>License Type</Form.Label>
@@ -300,101 +304,101 @@ const TransportInfo = () => {
     return (
         <div className="transport-info-page">
             <div className="cards-info-page">
-            <div className="table-container">
-                <h2>Stops</h2>
-                <Button variant="primary" onClick={() => handleShow('stop')}>Add Stop</Button>
-                <div className="table-responsive">
-                    <Table striped bordered hover className="custom-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Longitude</th>
-                                <th>Latitude</th>
-                                <th>Postal Code</th>
-                                <th>Address</th>
-                                <th>Contact Person</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {renderTableRows(stops, 'stop')}
-                        </tbody>
-                    </Table>
+                <div className="table-container">
+                    <h2>Stops</h2>
+                    <Button variant="primary" onClick={() => handleShow('stop')}>Add Stop</Button>
+                    <div className="table-responsive">
+                        <Table striped bordered hover className="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Longitude</th>
+                                    <th>Latitude</th>
+                                    <th>Postal Code</th>
+                                    <th>Address</th>
+                                    <th>Contact Person</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {renderTableRows(stops, 'stop')}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
-            </div>
 
-            <div className="table-container">
-                <h2>Drivers</h2>
-                <Button variant="primary" onClick={() => handleShow('driver')}>Add Driver</Button>
-                <div className="table-responsive">
-                    <Table striped bordered hover className="custom-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Vehicle</th>
-                                <th>License Type</th>
-                                <th>Phone Number</th>
-                                <th>Email</th>
-                                <th>Address</th>
-                                <th>Hire Date</th>
-                                <th>Date of Birth</th>
-                                <th>Emergency Contact</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {renderTableRows(drivers, 'driver')}
-                        </tbody>
-                    </Table>
+                <div className="table-container">
+                    <h2>Drivers</h2>
+                    <Button variant="primary" onClick={() => handleShow('driver')}>Add Driver</Button>
+                    <div className="table-responsive">
+                        <Table striped bordered hover className="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Vehicle</th>
+                                    <th>License Type</th>
+                                    <th>Phone Number</th>
+                                    <th>Email</th>
+                                    <th>Address</th>
+                                    <th>Hire Date</th>
+                                    <th>Date of Birth</th>
+                                    <th>Emergency Contact</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {renderTableRows(drivers, 'driver')}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
-            </div>
 
-            <div className="table-container">
-                <h2>Vehicles</h2>
-                <Button variant="primary" onClick={() => handleShow('vehicle')}>Add Vehicle</Button>
-                <div className="table-responsive">
-                    <Table striped bordered hover className="custom-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>License Plate</th>
-                                <th>Model</th>
-                                <th>Year</th>
-                                <th>Capacity</th>
-                                <th>Status</th>
-                                <th>Last Service Date</th>
-                                <th>Mileage</th>
-                                <th>Insurance Number</th>
-                                <th>Insurance Expiry</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {renderTableRows(vehicles, 'vehicle')}
-                        </tbody>
-                    </Table>
+                <div className="table-container">
+                    <h2>Vehicles</h2>
+                    <Button variant="primary" onClick={() => handleShow('vehicle')}>Add Vehicle</Button>
+                    <div className="table-responsive">
+                        <Table striped bordered hover className="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>License Plate</th>
+                                    <th>Model</th>
+                                    <th>Year</th>
+                                    <th>Capacity</th>
+                                    <th>Status</th>
+                                    <th>Last Service Date</th>
+                                    <th>Mileage</th>
+                                    <th>Insurance Number</th>
+                                    <th>Insurance Expiry</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {renderTableRows(vehicles, 'vehicle')}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
-            </div>
 
-            <Modal show={showModal} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{currentData?.id ? 'Edit' : 'Add'} {modalType.charAt(0).toUpperCase() + modalType.slice(1)}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit}>
-                        {renderModalContent()}
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-                            <Button variant="primary" type="submit">Save</Button>
-                        </Modal.Footer>
-                    </Form>
-                </Modal.Body>
-            </Modal>
-        </div>
+                <Modal show={showModal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{currentData?.id ? 'Edit' : 'Add'} {modalType.charAt(0).toUpperCase() + modalType.slice(1)}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={handleSubmit}>
+                            {renderModalContent()}
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                                <Button variant="primary" type="submit">Save</Button>
+                            </Modal.Footer>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
+            </div>
         </div>
     );
 };

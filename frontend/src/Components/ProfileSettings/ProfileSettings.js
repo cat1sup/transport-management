@@ -5,7 +5,7 @@ import './ProfileSettings.css';
 
 export default function ProfileSettings() {
     const [user, setUser] = useState({ username: '', email: '' });
-    const [currentPassword, setCurrentPassword] = useState(''); // Add state for current password
+    const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from '../axiosConfig'; // Ensures axios is configured to handle cookies
+import axios from '../axiosConfig';
 
 const AuthContext = createContext();
 

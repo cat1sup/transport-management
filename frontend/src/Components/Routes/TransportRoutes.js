@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Row, Col, Card, Button, Form } from 'react-bootstrap';
 import { useAuth } from '../AuthContext';
 import Map from './Map';
-import './TransportRoutes.css'; // Import the custom CSS
+import './TransportRoutes.css';
 
 const MapPage = () => {
     const { isLoggedIn } = useAuth();

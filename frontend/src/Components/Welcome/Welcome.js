@@ -6,7 +6,7 @@ function Welcome() {
   useEffect(() => {
     document.body.className = 'welcome-body';
     return () => {
-      document.body.className = ''; // Reset when component unmounts
+      document.body.className = '';
     };
   }, []);
 

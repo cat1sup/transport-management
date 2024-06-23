@@ -14,19 +14,17 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');  // Clear any existing errors
+        setError('');
         try {
             const response = await axios.post('/api/users/register', {
                 email, username, password
             });
             console.log(response.data.message);
-            navigate('/registration-success'); // Redirect to a success page
+            navigate('/registration-success');
         } catch (error) {
             if (error.response) {
-                // Handle errors returned from the server
                 setError(error.response.data.message);
             } else {
-                // Handle other errors like network issues
                 setError("The registration process could not be completed.");
             }
         }

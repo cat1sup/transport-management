@@ -9,7 +9,7 @@ const Driver = sequelize.define('Driver', {
     },
     VehicleId: {
         type: DataTypes.INTEGER,
-        allowNull: true,  // Allow null values
+        allowNull: true, 
         references: {
             model: Vehicle,
             key: 'id'
@@ -50,5 +50,8 @@ const Driver = sequelize.define('Driver', {
 }, {
     timestamps: true
 });
+
+
+Driver.belongsTo(Vehicle, { foreignKey: 'VehicleId', as: 'Vehicle' });
 
 module.exports = Driver;
