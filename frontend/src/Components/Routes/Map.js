@@ -43,7 +43,7 @@ const Map = forwardRef((props, ref) => {
                             iconAnchor: [12, 41],
                             popupAnchor: [1, -34],
                             shadowSize: [41, 41],
-                            className: 'custom-marker' // Custom class for additional styling
+                            className: 'custom-marker'
                         })
                     }).bindPopup(`Waypoint ${i + 1}`);
                 }
